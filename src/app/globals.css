@@ -1,13 +1,20 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --background: #fafafa;
+  --foreground: #f4e8d2;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --text-primary: #192f44;
+  --text-secondary: #666;
+
+  --button-primary-hover: #383838;
+  --button-secondary-hover: #f2f2f2;
+  --button-secondary-border: #ebebeb;
+
+  --meeple-yellow: #ffcc00;
+  --meeple-red: #ff6666;
+  --meeple-blue: #3399ff;
+  --meeple-green: #33cc33;
+  --meeple-purple: #cc33cc;
+  --meeple-orange: #ff9933;
 }
 
 html,
@@ -17,11 +24,16 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--text-primary);
+  background: var(--foreground);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  font-family: "Montserrat", sans-serif;
+}
+
+input {
+  font-family: "Montserrat", sans-serif;
 }
 
 * {
@@ -33,6 +45,10 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+h1 {
+  font-family: "Merriweather", serif;
 }
 
 @media (prefers-color-scheme: dark) {

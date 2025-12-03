@@ -1,13 +1,20 @@
 .page {
   --background: #fafafa;
-  --foreground: #fff;
+  --foreground: #f4e8d2;
 
-  --text-primary: #000;
+  --text-primary: #192f44;
   --text-secondary: #666;
 
   --button-primary-hover: #383838;
   --button-secondary-hover: #f2f2f2;
   --button-secondary-border: #ebebeb;
+
+  --meeple-yellow: #ffcc00;
+  --meeple-red: #ff6666;
+  --meeple-blue: #3399ff;
+  --meeple-green: #33cc33;
+  --meeple-purple: #cc33cc;
+  --meeple-orange: #ff9933;
 
   display: flex;
   min-height: 100vh;
@@ -15,72 +22,37 @@
   justify-content: center;
   font-family: var(--font-geist-sans);
   background-color: var(--background);
+  color: var(--text-primary);
 }
 
 .main {
   display: flex;
   min-height: 100vh;
   width: 100%;
-  max-width: 800px;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
   background-color: var(--foreground);
-  padding: 120px 60px;
+  padding: 120px 120px;
 }
 
-.intro {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  gap: 24px;
-}
-
-.intro h1 {
-  max-width: 320px;
-  font-size: 40px;
+.title {
+  font-size: 64px;
+  line-height: 56px;
   font-weight: 600;
-  line-height: 48px;
-  letter-spacing: -2.4px;
-  text-wrap: balance;
+  margin: 0 48px 0 24px;
   color: var(--text-primary);
+  font-family: "Merriweather", serif !important;
 }
 
-.intro p {
-  max-width: 440px;
-  font-size: 18px;
+.subtitle {
+  font-size: 24px;
   line-height: 32px;
-  text-wrap: balance;
+  font-weight: 400;
+  margin: 24px 0 0 0;
+  text-align: right;
   color: var(--text-secondary);
-}
-
-.intro a {
-  font-weight: 500;
-  color: var(--text-primary);
-}
-
-.ctas {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  max-width: 440px;
-  gap: 16px;
-  font-size: 14px;
-}
-
-.ctas a {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 40px;
-  padding: 0 16px;
-  border-radius: 128px;
-  border: 1px solid transparent;
-  transition: 0.2s;
-  cursor: pointer;
-  width: fit-content;
-  font-weight: 500;
+  font-family: "Montserrat", sans-serif !important;
 }
 
 a.primary {
@@ -119,23 +91,5 @@ a.secondary {
     font-size: 32px;
     line-height: 40px;
     letter-spacing: -1.92px;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  .logo {
-    filter: invert();
-  }
-
-  .page {
-    --background: #000;
-    --foreground: #000;
-
-    --text-primary: #ededed;
-    --text-secondary: #999;
-
-    --button-primary-hover: #ccc;
-    --button-secondary-hover: #1a1a1a;
-    --button-secondary-border: #1a1a1a;
   }
 }
