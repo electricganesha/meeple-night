@@ -75,17 +75,16 @@ export async function GET(request: NextRequest) {
     name
   )}&type=boardgame`;
   const searchRes = await fetch(searchUrl);
-  console.log("searchRes > ", searchRes);
+
   const searchXml = await searchRes.text();
-  console.log("searchXml > ", searchXml);
+
   const searchJson = await parseStringPromise(searchXml);
-  console.log("searchJSON > ", searchJson);
 
   if (!searchJson) {
     return NextResponse.json({ games: [] });
   }
 
-  if (!searchJson.items || !searchJson.items.item) {
+  if (!searchJson.items?.item) {
     return NextResponse.json({ games: [] });
   }
 

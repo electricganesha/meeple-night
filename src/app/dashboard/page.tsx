@@ -12,6 +12,10 @@ import { format } from "date-fns/format";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import Search from "../components/Search/Search";
+import { List, ListItem, ListItemText } from "@mui/material";
+import { Game } from "../../../types/game";
+import Link from "next/link";
 
 interface User {
   id: string;
@@ -26,11 +30,11 @@ export default function DashboardPage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [games, setGames] = useState([]);
 
   useEffect(() => {
     getSession()
       .then((s) => {
-        console.log("s > ", s);
         setUser((s.data?.user as User) ?? null);
         setLoading(false);
       })
@@ -38,6 +42,17 @@ export default function DashboardPage() {
         setError("Failed to load session");
         setLoading(false);
       });
+  }, []);
+
+  useEffect(() => {
+    async function fetchCollection() {
+      const res = await fetch("/api/collection");
+      if (res.ok) {
+        const data = await res.json();
+        setGames(data.games);
+      }
+    }
+    fetchCollection();
   }, []);
 
   let accountInfo;
@@ -102,10 +117,11 @@ export default function DashboardPage() {
   }
 
   return (
-    <Box sx={{ p: 4, position: "relative" }}>
+    <Box sx={{ p: 4, position: "relative", width: "100%" }}>
       <Typography variant="h3" gutterBottom>
         Dashboard
       </Typography>
+
       <Box
         sx={{
           position: "absolute",
@@ -138,14 +154,40 @@ export default function DashboardPage() {
         </form>
       </Box>
 
-      <Paper sx={{ p: 3, maxWidth: 640, marginTop: 16 }} elevation={3}>
-        <Typography variant="h5" gutterBottom>
-          Account Info
-        </Typography>
-        {loading && <CircularProgress />}
-        {error && <Alert severity="error">{error}</Alert>}
-        {accountInfo}
-      </Paper>
+      <Stack
+        width="100%"
+        spacing={24}
+        direction="row"
+        alignItems="space-between"
+      >
+        <Paper sx={{ p: 3, maxWidth: 640, marginTop: 16 }} elevation={3}>
+          <Typography variant="h5" gutterBottom>
+            Account Info
+          </Typography>
+          {loading && <CircularProgress />}
+          {error && <Alert severity="error">{error}</Alert>}
+          {accountInfo}
+        </Paper>
+        <Search />
+        <Box sx={{ maxWidth: 600, mx: "auto", mt: 4 }}>
+          <Typography variant="h5" gutterBottom>
+            My Collection
+          </Typography>
+          <List>
+            {games.map((game: Game) => (
+              <Link
+                key={game.id}
+                href={`/games/${game.id}`}
+                style={{ textDecoration: "none", width: "100%" }}
+              >
+                <ListItem>
+                  <ListItemText primary={game.name} />
+                </ListItem>
+              </Link>
+            ))}
+          </List>
+        </Box>
+      </Stack>
     </Box>
   );
 }

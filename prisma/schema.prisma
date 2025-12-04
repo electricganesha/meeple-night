@@ -7,10 +7,12 @@
 generator client {
   provider = "prisma-client"
   output   = "../generated/prisma"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
   provider = "postgresql"
+  extensions = [pg_trgm]
 }
 
 model User {
@@ -23,6 +25,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  collection    BoardGame[] @relation(name: "UserCollection")
 
   @@unique([email])
   @@map("user")
@@ -73,4 +76,77 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model BoardGame {
+  id        Int     @id @default(autoincrement())
+  bggId     Int     @unique
+  name      String
+  description String? @db.Text 
+  
+  yearPublished Int?
+  gameWeight    Float?  // "GameWeight"
+  avgRating     Float?  // "AvgRating"
+  bayesAvgRating Float? // "BayesAvgRating"
+  stdDev        Float?
+  
+  minPlayers    Int?
+  maxPlayers    Int?
+  
+  comAgeRec     Float?  
+  languageEase  Float? 
+  
+  bestPlayers   String? 
+  goodPlayers   String? 
+  
+  numOwned      Int?
+  numWant       Int?
+  numWish       Int?
+  numWeightVotes Int?
+  
+  mfgPlaytime    Int?
+  comMinPlaytime Int?
+  comMaxPlaytime Int?
+  mfgAgeRec      Int?
+  
+  numUserRatings Int?
+  numComments    Int?
+  
+  numAlternates      Int?
+  numExpansions      Int?
+  numImplementations Int?
+  
+  isReimplementation Boolean @default(false)
+  
+  family        String?  @db.Text
+  kickstarted   Boolean  @default(false)
+  
+  imagePath     String?
+  
+  rankBoardgame    Int?
+  rankStrategy     Int?
+  rankAbstract     Int?
+  rankFamily       Int?
+  rankThematic     Int?
+  rankCGS          Int?
+  rankWargames     Int?
+  rankParty        Int?
+  rankChildrens    Int?
+  
+  catThematic  Boolean @default(false)
+  catStrategy  Boolean @default(false)
+  catWar       Boolean @default(false)
+  catFamily    Boolean @default(false)
+  catCGS       Boolean @default(false)
+  catAbstract  Boolean @default(false)
+  catParty     Boolean @default(false)
+  catChildrens Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owners User[] @relation(name: "UserCollection")
+
+  @@index([name(ops: raw("gin_trgm_ops"))], type: Gin)  
+  @@index([bggId])
 }

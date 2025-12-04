@@ -42,3 +42,11 @@ next-env.d.ts
 
 /generated/prisma
 .env*.local
+
+# prisma
+/prisma/generated/
+/pgdata/
+/pgadmin/
+
+#dist 
+/dist/
