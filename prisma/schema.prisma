@@ -5,27 +5,28 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider        = "prisma-client"
+  output          = "../generated/prisma"
   previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider = "postgresql"
+  provider   = "postgresql"
   extensions = [pg_trgm]
 }
 
 model User {
-  id            String    @id
+  id            String          @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean         @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
   sessions      Session[]
   accounts      Account[]
-  collection    BoardGame[] @relation(name: "UserCollection")
+  collection    BoardGame[]     @relation(name: "UserCollection")
+  sessionUsers  GamingSession[] @relation("SessionUsers")
 
   @@unique([email])
   @@map("user")
@@ -46,6 +47,7 @@ model Session {
   @@index([userId])
   @@map("session")
 }
+
 model Account {
   id                    String    @id
   accountId             String
@@ -79,60 +81,60 @@ model Verification {
 }
 
 model BoardGame {
-  id        Int     @id @default(autoincrement())
-  bggId     Int     @unique
-  name      String
-  description String? @db.Text 
-  
-  yearPublished Int?
-  gameWeight    Float?  // "GameWeight"
-  avgRating     Float?  // "AvgRating"
+  id          Int     @id @default(autoincrement())
+  bggId       Int     @unique
+  name        String
+  description String? @db.Text
+
+  yearPublished  Int?
+  gameWeight     Float? // "GameWeight"
+  avgRating      Float? // "AvgRating"
   bayesAvgRating Float? // "BayesAvgRating"
-  stdDev        Float?
-  
-  minPlayers    Int?
-  maxPlayers    Int?
-  
-  comAgeRec     Float?  
-  languageEase  Float? 
-  
-  bestPlayers   String? 
-  goodPlayers   String? 
-  
-  numOwned      Int?
-  numWant       Int?
-  numWish       Int?
+  stdDev         Float?
+
+  minPlayers Int?
+  maxPlayers Int?
+
+  comAgeRec    Float?
+  languageEase Float?
+
+  bestPlayers String?
+  goodPlayers String?
+
+  numOwned       Int?
+  numWant        Int?
+  numWish        Int?
   numWeightVotes Int?
-  
+
   mfgPlaytime    Int?
   comMinPlaytime Int?
   comMaxPlaytime Int?
   mfgAgeRec      Int?
-  
+
   numUserRatings Int?
   numComments    Int?
-  
+
   numAlternates      Int?
   numExpansions      Int?
   numImplementations Int?
-  
+
   isReimplementation Boolean @default(false)
-  
-  family        String?  @db.Text
-  kickstarted   Boolean  @default(false)
-  
-  imagePath     String?
-  
-  rankBoardgame    Int?
-  rankStrategy     Int?
-  rankAbstract     Int?
-  rankFamily       Int?
-  rankThematic     Int?
-  rankCGS          Int?
-  rankWargames     Int?
-  rankParty        Int?
-  rankChildrens    Int?
-  
+
+  family      String? @db.Text
+  kickstarted Boolean @default(false)
+
+  imagePath String?
+
+  rankBoardgame Int?
+  rankStrategy  Int?
+  rankAbstract  Int?
+  rankFamily    Int?
+  rankThematic  Int?
+  rankCGS       Int?
+  rankWargames  Int?
+  rankParty     Int?
+  rankChildrens Int?
+
   catThematic  Boolean @default(false)
   catStrategy  Boolean @default(false)
   catWar       Boolean @default(false)
@@ -145,8 +147,22 @@ model BoardGame {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owners User[] @relation(name: "UserCollection")
+  owners       User[]          @relation(name: "UserCollection")
+  sessionGames GamingSession[] @relation("SessionGames")
 
-  @@index([name(ops: raw("gin_trgm_ops"))], type: Gin)  
+  @@index([name(ops: raw("gin_trgm_ops"))], type: Gin)
   @@index([bggId])
+}
+
+model GamingSession {
+  id          Int         @id @default(autoincrement())
+  title       String
+  description String?
+  date        DateTime
+  startTime   DateTime
+  endTime     DateTime
+  users       User[]      @relation("SessionUsers")
+  games       BoardGame[] @relation("SessionGames")
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
 }
