@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
-import { Merriweather, Montserrat } from "next/font/google";
+import { Fredoka, Nunito } from "next/font/google";
 import "./globals.css";
+import ThemeRegistry from "./components/ThemeRegistry/ThemeRegistry";
+import { Footer } from "./components/Footer/Footer";
+import { Navbar } from "./components/Navbar/Navbar";
 
-const merriweather = Merriweather({
-  variable: "--font-merriweather",
-  subsets: ["latin"],
+const fredoka = Fredoka({
+  variable: "--font-fredoka",
 });
 
-const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
+const nunito = Nunito({
+  variable: "--font-nunito",
 });
 
 export const metadata: Metadata = {
@@ -23,10 +24,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${merriweather.variable} ${montserrat.variable}`}>
-        {children}
-      </body>
-    </html>
+    <ThemeRegistry>
+      <html lang="en">
+        <Navbar />
+        <body className={`${fredoka.variable} ${nunito.variable}`}>
+          {children}
+        </body>
+        <Footer />
+      </html>
+    </ThemeRegistry>
   );
 }

@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap");
+
 :root {
   --background: #fafafa;
   --foreground: #f4e8d2;
@@ -9,37 +11,86 @@
   --button-secondary-hover: #f2f2f2;
   --button-secondary-border: #ebebeb;
 
-  --meeple-yellow: #ffcc00;
-  --meeple-red: #ff6666;
-  --meeple-blue: #3399ff;
-  --meeple-green: #33cc33;
-  --meeple-purple: #cc33cc;
-  --meeple-orange: #ff9933;
+  --card: hsl(220, 40%, 16%);
+  --card-foreground: hsl(45, 30%, 96%);
+
+  --popover: hsl(220, 40%, 16%);
+  --popover-foreground: hsl(45, 30%, 96%);
+
+  /* Warm amber/orange - campfire inspired */
+  --primary: hsl(38, 92%, 50%);
+  --primary-foreground: hsl(220, 45%, 10%);
+
+  /* Deep navy secondary */
+  --secondary: hsl(220, 50%, 20%);
+  --secondary-foreground: hsl(45, 30%, 96%);
+
+  --muted: hsl(220, 40%, 20%);
+  --muted-foreground: hsl(220, 20%, 60%);
+
+  /* Soft amber accent */
+  --accent: hsl(32, 95%, 55%);
+  --accent-foreground: hsl(220, 45%, 10%);
+
+  --destructive: hsl(0, 84%, 60%);
+  --destructive-foreground: hsl(45, 30%, 96%);
+
+  --border: hsl(220, 40%, 25%);
+  --input: hsl(220, 40%, 22%);
+  --ring: hsl(38, 92%, 50%);
+
+  --radius: 0.75rem;
+
+  /* Meeple colors */
+  --meeple-red: hsl(0, 75%, 55%);
+  --meeple-blue: hsl(205, 85%, 55%);
+  --meeple-green: hsl(145, 60%, 45%);
+  --meeple-yellow: hsl(45, 95%, 55%);
+
+  /* Gradients */
+  --gradient-fire: linear-gradient(135deg, hsl(38, 92%, 50%) 0%, hsl(25, 95%, 55%) 50%, hsl(15, 90%, 50%) 100%);
+  --gradient-night: linear-gradient(180deg, hsl(220, 45%, 8%) 0%, hsl(220, 45%, 15%) 50%, hsl(220, 40%, 20%) 100%);
+  --gradient-glow: radial-gradient(ellipse at center, hsl(38, 92%, 50%, 0.15) 0%, transparent 70%);
+
+  /* Shadows */
+  --shadow-glow: 0 0 40px hsl(38, 92%, 50%, 0.3);
+  --shadow-card: 0 8px 32px hsl(220, 45%, 5%, 0.5);
+
+  /* Sidebar - keeping for compatibility */
+  --sidebar-background: hsl(220, 45%, 10%);
+  --sidebar-foreground: hsl(45, 30%, 96%);
+  --sidebar-primary: hsl(38, 92%, 50%);
+  --sidebar-primary-foreground: hsl(220, 45%, 10%);
+  --sidebar-accent: hsl(220, 40%, 18%);
+  --sidebar-accent-foreground: hsl(45, 30%, 96%);
+  --sidebar-border: hsl(220, 40%, 20%);
+  --sidebar-ring: hsl(38, 92%, 50%);
 }
 
 html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
 body {
-  color: var(--text-primary);
-  background: var(--foreground);
+  color: var(--foreground);
+  background: var(--background);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-nunito);
 }
 
 input {
-  font-family: "Montserrat", sans-serif;
+  font-family: var(--font-nunito);
 }
 
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  border-color: var(--border);
 }
 
 a {
@@ -47,12 +98,82 @@ a {
   text-decoration: none;
 }
 
-h1 {
-  font-family: "Merriweather", serif;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-fredoka);
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+/* Utility classes */
+.gradient-fire {
+  background: var(--gradient-fire);
+}
+
+.gradient-night {
+  background: var(--gradient-night);
+}
+
+.glow-primary {
+  box-shadow: var(--shadow-glow);
+}
+
+.text-gradient-fire {
+  background: var(--gradient-fire);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Animations */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes fade-in {
+  to {
+    opacity: 1;
   }
 }

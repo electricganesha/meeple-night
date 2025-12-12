@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
+import { StarField } from "../components/Starfield/Starfield";
 
 export default function SignInPage() {
   const [email, setEmail] = useState("");
@@ -42,9 +43,11 @@ export default function SignInPage() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: "60vh",
+        minHeight: "100vh",
+        backgroundColor: "var(--card)",
       }}
     >
+      <StarField />
       <Box
         component="form"
         onSubmit={handleSubmit}

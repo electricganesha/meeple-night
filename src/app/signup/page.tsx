@@ -10,6 +10,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
+import { StarField } from "../components/Starfield/Starfield";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
@@ -86,8 +87,9 @@ export default function SignupPage() {
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
-      minHeight="60vh"
+      sx={{ minHeight: "100vh", backgroundColor: "var(--card)" }}
     >
+      <StarField />
       <Box
         component="form"
         onSubmit={handleSubmit}

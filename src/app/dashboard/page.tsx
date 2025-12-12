@@ -1,193 +1,362 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getSession } from "../lib/auth/auth-client";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
-import CircularProgress from "@mui/material/CircularProgress";
-import Alert from "@mui/material/Alert";
-import Image from "next/image";
-import { format } from "date-fns/format";
-import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import Search from "../components/Search/Search";
-import { List, ListItem, ListItemText } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useEffect, useState } from "react";
+import { useAuthSession } from "../hooks/useAuthSession";
+import { useRouter } from "next/navigation";
+import { StarField } from "../components/Starfield/Starfield";
+import { StatCard } from "../components/StatCard/StatCard";
+import { Calendar, Gamepad2, Trophy, Users } from "lucide-react";
+import { QuickActions } from "../components/QuickActions/QuickActions";
+import { SessionCard } from "../components/SessionCard/SessionCard";
+import { GameCard } from "../components/GameCard/GameCard";
+import { FriendsList } from "../components/FriendsList/FriendsList";
 import { Game } from "../../../types/game";
-import Link from "next/link";
+import { Divider } from "@mui/material";
 
-interface User {
-  id: string;
-  name: string | null;
-  email: string | null;
-  image: string | null;
-  createdAt: Date | null;
-  emailVerified: boolean | null;
-}
+const mockSessions = [
+  {
+    title: "Friday Night Meeple",
+    date: "2025-12-12",
+    time: "19:00",
+    location: "John's House",
+    playerCount: 3,
+    maxPlayers: 5,
+    suggestedGames: ["Catan", "Azul", "Wingspan"],
+    isUpcoming: true,
+  },
+  {
+    title: "Strategy Sunday",
+    date: "2025-12-14",
+    time: "15:00",
+    location: "Maria's Apartment",
+    playerCount: 4,
+    maxPlayers: 6,
+    suggestedGames: ["Wingspan", "Carcassonne", "Codenames", "7 Wonders"],
+    isUpcoming: true,
+  },
+  {
+    title: "Last Week's Bash",
+    date: "2025-12-05",
+    time: "20:00",
+    location: "Chris' Place",
+    playerCount: 3,
+    maxPlayers: 4,
+    suggestedGames: ["Azul", "Ticket to Ride"],
+    isUpcoming: false,
+  },
+];
 
 export default function DashboardPage() {
-  const [user, setUser] = useState<User | null>(null);
+  const { session } = useAuthSession();
+  const router = useRouter();
+  const [games, setGames] = useState<Game[] | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [games, setGames] = useState([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    getSession()
-      .then((s) => {
-        setUser((s.data?.user as User) ?? null);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError("Failed to load session");
-        setLoading(false);
-      });
-  }, []);
-
-  useEffect(() => {
-    async function fetchCollection() {
-      const res = await fetch("/api/collection");
-      if (res.ok) {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLoading(true);
+    setError(null);
+    fetch("/api/collection")
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Failed to fetch collection");
         const data = await res.json();
-        setGames(data.games);
-      }
-    }
-    fetchCollection();
+        setGames(data.games || []);
+      })
+      .catch((err) => {
+        setError(err.message || "Unknown error");
+        setGames([]);
+      })
+      .finally(() => setLoading(false));
   }, []);
-
-  let accountInfo;
-  if (user) {
-    accountInfo = (
-      <Stack justifyContent="center">
-        <Typography variant="body1">
-          <strong>Name:</strong> {user.name}
-        </Typography>
-        <Typography variant="body1">
-          <strong>Email:</strong> {user.email}
-        </Typography>
-        <Typography variant="body1">
-          <strong>Created at:</strong>{" "}
-          {user.createdAt ? format(new Date(user.createdAt), "PPP") : "N/A"}
-        </Typography>
-        {user.emailVerified !== null && (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "flex-start",
-              justifyContent: "flex-end",
-              mt: 2,
-            }}
-          >
-            <Chip
-              label={
-                user.emailVerified ? "Email Verified" : "Email Not Verified"
-              }
-              variant="outlined"
-              color={user.emailVerified ? "primary" : "error"}
-            />
-          </Box>
-        )}
-        {user.image && (
-          <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
-            <Image
-              src={user.image}
-              alt="User avatar"
-              style={{ borderRadius: "50%", width: 80, height: 80 }}
-            />
-          </Box>
-        )}
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="caption" color="text.secondary">
-            Account Data:
-          </Typography>
-          <Paper variant="outlined" sx={{ p: 2, mt: 1, bgcolor: "grey.100" }}>
-            <pre style={{ margin: 0, fontSize: 12 }}>
-              {JSON.stringify(user, null, 2)}
-            </pre>
-          </Paper>
-        </Box>
-      </Stack>
-    );
-  } else if (!loading && !error) {
-    accountInfo = (
-      <Alert severity="warning">No session found. Please sign in.</Alert>
-    );
-  } else {
-    accountInfo = null;
-  }
 
   return (
-    <Box sx={{ p: 4, position: "relative", width: "100%" }}>
-      <Typography variant="h3" gutterBottom>
-        Dashboard
-      </Typography>
-
-      <Box
-        sx={{
-          position: "absolute",
-          top: 48,
-          right: 48,
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          mb: 2,
-        }}
-      >
-        <form action="/signout" method="post">
-          <Button
-            type="submit"
-            variant="contained"
-            sx={{
-              backgroundColor: "var(--meeple-yellow)",
-              color: "var(--text-primary)",
-              fontWeight: "bold",
-            }}
-          >
-            <Typography
-              variant="button"
-              color="var(--text-primary)"
-              fontWeight="bold"
-            >
-              Sign Out
-            </Typography>
-          </Button>
-        </form>
+    <Box
+      component="main"
+      sx={{
+        mx: "auto",
+        px: 20,
+        py: 14,
+        backgroundColor: "var(--primary-foreground)",
+      }}
+    >
+      <StarField />
+      {/* Welcome Section */}
+      <Box sx={{ mb: 8 }}>
+        <Typography
+          variant="h3"
+          sx={{
+            fontFamily: "var(--font-fredoka)",
+            fontWeight: 700,
+            color: "var(--foreground)",
+            mb: 1,
+          }}
+        >
+          Welcome back, {session?.user.name.split(" ")[0]}{" "}
+          <span role="img" aria-label="wave">
+            👋
+          </span>
+        </Typography>
+        <Typography sx={{ color: "var(--meeple-yellow)" }}>
+          You have 2 upcoming game nights this week
+        </Typography>
       </Box>
 
-      <Stack
-        width="100%"
-        spacing={24}
-        direction="row"
-        alignItems="space-between"
+      {/* Quick Actions */}
+      <Box sx={{ mb: 4 }}>
+        <QuickActions />
+      </Box>
+
+      {/* Stats Grid */}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "repeat(2, 1fr)", lg: "repeat(4, 1fr)" },
+          gap: 2,
+          mb: 6,
+        }}
       >
-        <Paper sx={{ p: 3, maxWidth: 640, marginTop: 16 }} elevation={3}>
-          <Typography variant="h5" gutterBottom>
-            Account Info
-          </Typography>
-          {loading && <CircularProgress />}
-          {error && <Alert severity="error">{error}</Alert>}
-          {accountInfo}
-        </Paper>
-        <Search />
-        <Box sx={{ maxWidth: 600, mx: "auto", mt: 4 }}>
-          <Typography variant="h5" gutterBottom>
-            My Collection
-          </Typography>
-          <List>
-            {games.map((game: Game) => (
-              <Link
-                key={game.id}
-                href={`/games/${game.id}`}
-                style={{ textDecoration: "none", width: "100%" }}
+        <StatCard
+          icon={Calendar}
+          label="Sessions This Month"
+          value={7}
+          trend="+2 from last month"
+          accentColor="primary"
+        />
+        <StatCard
+          icon={Gamepad2}
+          label="Games in Collection"
+          value={games?.length || 0}
+          accentColor="blue"
+        />
+        <StatCard
+          icon={Users}
+          label="Gaming Friends"
+          value={5}
+          accentColor="green"
+        />
+        <StatCard
+          icon={Trophy}
+          label="Games Played"
+          value={82}
+          trend="+12 this month"
+          accentColor="yellow"
+        />
+      </Box>
+
+      <Divider sx={{ m: 4, borderColor: "var(--border)" }} />
+      {/* Main Content Grid */}
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", lg: "2fr 1fr" },
+          gap: 4,
+        }}
+      >
+        {/* Left Column - Sessions & Collection */}
+        <Box>
+          <Stack spacing={6}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography
+                variant="h5"
+                sx={{
+                  fontFamily: "var(--font-fredoka)",
+                  fontWeight: 600,
+                  color: "var(--foreground)",
+                }}
               >
-                <ListItem>
-                  <ListItemText primary={game.name} />
-                </ListItem>
-              </Link>
-            ))}
-          </List>
+                Upcoming Sessions
+              </Typography>
+              <Button
+                variant="text"
+                sx={{
+                  color: "var(--primary)",
+                  fontWeight: 500,
+                  fontSize: 14,
+                  textTransform: "none",
+                }}
+              >
+                View All
+              </Button>
+            </Box>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+                gap: 2,
+              }}
+            >
+              {mockSessions.slice(0, 2).map((session) => (
+                <Box key={session.title}>
+                  <SessionCard {...session} />
+                </Box>
+              ))}
+            </Box>
+
+            <Divider sx={{ m: 4, borderColor: "var(--border)" }} />
+            {/* Collection Preview */}
+            <Box sx={{ mt: 8 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  mb: 2,
+                }}
+              >
+                <Typography
+                  variant="h5"
+                  sx={{
+                    fontFamily: "var(--font-fredoka)",
+                    fontWeight: 600,
+                    color: "var(--foreground)",
+                  }}
+                >
+                  Your Collection
+                </Typography>
+                <Button
+                  variant="text"
+                  sx={{
+                    color: "var(--primary)",
+                    fontWeight: 500,
+                    fontSize: 14,
+                    textTransform: "none",
+                  }}
+                  onClick={() => router.push("/collection")}
+                >
+                  View All {games ? games.length : 0} Games
+                </Button>
+              </Box>
+              <Box
+                sx={{
+                  display: "grid",
+                  gridTemplateColumns: {
+                    xs: "1fr 1fr",
+                    sm: "1fr 1fr 1fr",
+                    md: "1fr 1fr 1fr 1fr",
+                  },
+                  gap: 2,
+                  minHeight: 180,
+                  alignItems: "stretch",
+                  justifyItems: "stretch",
+                }}
+              >
+                {loading ? (
+                  <Box
+                    sx={{
+                      gridColumn: "1/-1",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      minHeight: 120,
+                    }}
+                  >
+                    <CircularProgress color="primary" />
+                  </Box>
+                ) : error ? (
+                  <Typography
+                    color="error"
+                    sx={{ gridColumn: "1/-1", textAlign: "center", py: 4 }}
+                  >
+                    {error}
+                  </Typography>
+                ) : games && games.length > 0 ? (
+                  games.slice(0, 4).map((game) => (
+                    <Box key={game.id || game.name}>
+                      <GameCard {...game} />
+                    </Box>
+                  ))
+                ) : (
+                  <Typography
+                    sx={{ gridColumn: "1/-1", textAlign: "center", py: 4 }}
+                  >
+                    No games in your collection yet.
+                  </Typography>
+                )}
+              </Box>
+            </Box>
+          </Stack>
         </Box>
-      </Stack>
+
+        {/* Right Column - Sidebar */}
+        <Box>
+          <Stack spacing={6} mt={10}>
+            <FriendsList />
+            {/* Recent Activity */}
+            <Paper
+              sx={{
+                bgcolor: "var(--card)",
+                border: "1px solid var(--border)",
+                borderRadius: 3,
+                p: 4,
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  fontFamily: "var(--font-fredoka)",
+                  fontWeight: 600,
+                  color: "var(--foreground)",
+                  mb: 2,
+                }}
+              >
+                Recent Activity
+              </Typography>
+              <Stack spacing={3}>
+                {[
+                  { action: "Played Wingspan", time: "2 days ago", icon: "🎯" },
+                  {
+                    action: "Alex joined your group",
+                    time: "3 days ago",
+                    icon: "👋",
+                  },
+                  {
+                    action: "Session completed",
+                    time: "5 days ago",
+                    icon: "✅",
+                  },
+                  {
+                    action: "Added 3 games to collection",
+                    time: "1 week ago",
+                    icon: "📦",
+                  },
+                ].map((activity) => (
+                  <Box
+                    key={activity.action}
+                    sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}
+                  >
+                    <span style={{ fontSize: 22 }}>{activity.icon}</span>
+                    <Box>
+                      <Typography
+                        sx={{ fontSize: 15, color: "var(--foreground)" }}
+                      >
+                        {activity.action}
+                      </Typography>
+                      <Typography
+                        sx={{ fontSize: 12, color: "var(--muted-foreground)" }}
+                      >
+                        {activity.time}
+                      </Typography>
+                    </Box>
+                  </Box>
+                ))}
+              </Stack>
+            </Paper>
+          </Stack>
+        </Box>
+      </Box>
     </Box>
   );
 }

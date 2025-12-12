@@ -4,12 +4,13 @@ import { prisma } from "@/app/lib/prisma/prisma";
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } } | { params: Promise<{ id: string }> }
 ) {
+  const { id } = await context.params;
   const { title, description, date, startTime, endTime, userIds, gameIds } =
     await req.json();
   const session = await prisma.gamingSession.update({
-    where: { id: Number(params.id) },
+    where: { id: Number(id) },
     data: {
       title,
       description,
@@ -24,11 +25,12 @@ export async function PUT(
 }
 
 export async function DELETE(
-  _req: NextRequest,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  context: { params: { id: string } } | { params: Promise<{ id: string }> }
 ) {
+  const { id } = await context.params;
   await prisma.gamingSession.delete({
-    where: { id: Number(params.id) },
+    where: { id: Number(id) },
   });
   return NextResponse.json({ success: true });
 }
