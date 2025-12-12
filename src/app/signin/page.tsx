@@ -44,7 +44,8 @@ export default function SignInPage() {
         alignItems: "center",
         justifyContent: "center",
         minHeight: "100vh",
-        backgroundColor: "var(--card)",
+        width: "100%",
+        backgroundColor: "var(--accent-foreground)",
       }}
     >
       <StarField />
@@ -56,7 +57,7 @@ export default function SignInPage() {
           p: 3,
           boxShadow: 3,
           borderRadius: 2,
-          bgcolor: "background.paper",
+          backgroundColor: "var(--card)",
         }}
       >
         <TextField
@@ -100,6 +101,7 @@ export default function SignInPage() {
             backgroundColor: "var(--meeple-yellow)",
             color: "var(--text-primary)",
             fontWeight: "bold",
+            textTransform: "none",
           }}
         >
           Sign In
@@ -111,7 +113,9 @@ export default function SignInPage() {
         )}
         <Box sx={{ mt: 3, textAlign: "center" }}>
           <Typography variant="body2">
-            <span style={{ color: "black" }}>Don&apos;t have an account? </span>
+            <span style={{ color: "var(--background)", marginRight: 12 }}>
+              Don&apos;t have an account?{" "}
+            </span>
             <Link
               href="/signup"
               style={{ color: "#1976d2", textDecoration: "underline" }}

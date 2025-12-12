@@ -18,6 +18,68 @@ const theme = createTheme({
       lineHeight: "1.1 !important",
     },
   },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        html: {
+          overflowX: "hidden",
+        },
+        body: {
+          overflowX: "hidden",
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          svg: {
+            color: "var(--border)",
+          },
+          "::placeholder": {
+            color: "var(--background) !important",
+            opacity: 1,
+          },
+          border: "1px solid var(--border)",
+          color: "var(--background)",
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: "var(--background)",
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          color: "var(--background)",
+        },
+      },
+    },
+    MuiMenuItem: {
+      styleOverrides: {
+        root: {
+          color: "var(--text-primary)",
+        },
+      },
+    },
+    MuiFormControl: {
+      styleOverrides: {
+        root: {
+          minWidth: 200,
+        },
+      },
+    },
+    MuiPopover: {
+      styleOverrides: {
+        paper: {
+          minWidth: 200,
+        },
+      },
+    },
+  },
 });
 
 export default theme;

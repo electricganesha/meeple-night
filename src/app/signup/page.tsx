@@ -87,7 +87,7 @@ export default function SignupPage() {
       flexDirection="column"
       alignItems="center"
       justifyContent="center"
-      sx={{ minHeight: "100vh", backgroundColor: "var(--card)" }}
+      sx={{ minHeight: "100vh", backgroundColor: "var(--accent-foreground)" }}
     >
       <StarField />
       <Box
@@ -98,7 +98,7 @@ export default function SignupPage() {
           p: 3,
           boxShadow: 3,
           borderRadius: 2,
-          bgcolor: "background.paper",
+          backgroundColor: "var(--card)",
         }}
       >
         <TextField
@@ -176,12 +176,15 @@ export default function SignupPage() {
             backgroundColor: "var(--meeple-yellow)",
             color: "var(--text-primary)",
             fontWeight: "bold",
+            textTransform: "none",
           }}
         >
           {loading ? "Signing up..." : "Sign Up"}
         </Button>
         <Box display="flex" justifyContent="center" mt={2}>
-          <span style={{ color: "black" }}>Already signed up?&nbsp;</span>
+          <span style={{ color: "var(--background)", marginRight: 12 }}>
+            Already signed up?&nbsp;
+          </span>
           <Button
             variant="text"
             color="primary"

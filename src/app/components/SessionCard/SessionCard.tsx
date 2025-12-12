@@ -62,7 +62,14 @@ export const SessionCard = ({
             {title}
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 0.5 }}>
-            <MapPin style={{ width: 16, height: 16, marginRight: 2 }} />
+            <MapPin
+              style={{
+                width: 16,
+                height: 16,
+                marginRight: 2,
+                fill: "var(--meeple-red)",
+              }}
+            />
             <Typography sx={{ fontSize: 14, color: "var(--muted-foreground)" }}>
               {location}
             </Typography>

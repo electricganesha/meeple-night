@@ -30,7 +30,7 @@ export const Navbar = () => {
       <Box
         sx={{
           mx: "auto",
-          px: 20,
+          px: 4,
           height: 64,
           display: "flex",
           alignItems: "center",
@@ -254,42 +254,44 @@ export const Navbar = () => {
                 </Typography>
               </Stack>
             </Link>
-
-            <Box
-              component="nav"
-              sx={{
-                display: { xs: "none", md: "flex" },
-                alignItems: "center",
-                gap: 3,
-              }}
-            >
+            {pathname.startsWith("/signin") ||
+            pathname.startsWith("/signup") ? null : (
               <Box
-                component="a"
-                href="#features"
+                component="nav"
                 sx={{
-                  color: "var(--muted-foreground)",
-                  fontSize: 16,
-                  textDecoration: "none",
-                  transition: "color 0.2s",
-                  "&:hover": { color: "var(--foreground)" },
+                  display: { xs: "none", md: "flex" },
+                  alignItems: "center",
+                  gap: 3,
                 }}
               >
-                Features
+                <Box
+                  component="a"
+                  href="#features"
+                  sx={{
+                    color: "var(--muted-foreground)",
+                    fontSize: 16,
+                    textDecoration: "none",
+                    transition: "color 0.2s",
+                    "&:hover": { color: "var(--foreground)" },
+                  }}
+                >
+                  Features
+                </Box>
+                <Box
+                  component="a"
+                  href="#how-it-works"
+                  sx={{
+                    color: "var(--muted-foreground)",
+                    fontSize: 16,
+                    textDecoration: "none",
+                    transition: "color 0.2s",
+                    "&:hover": { color: "var(--foreground)" },
+                  }}
+                >
+                  How It Works
+                </Box>
               </Box>
-              <Box
-                component="a"
-                href="#how-it-works"
-                sx={{
-                  color: "var(--muted-foreground)",
-                  fontSize: 16,
-                  textDecoration: "none",
-                  transition: "color 0.2s",
-                  "&:hover": { color: "var(--foreground)" },
-                }}
-              >
-                How It Works
-              </Box>
-            </Box>
+            )}
 
             <Stack direction="row" alignItems="center" spacing={1.5}>
               <Button variant="ghost" size="sm">
